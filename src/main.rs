@@ -23,16 +23,16 @@
 pub struct TextFinder {
     re_str : String,
     last_dir : String,
-    hide : bool,
-    recurse : bool,
+    // hide : bool,
+    // recurse : bool,
 }
 impl TextFinder {
     pub fn new() -> TextFinder {
         Self { 
             re_str: String::default(), 
             last_dir: String::default(),
-            hide: false,
-            recurse: false,
+            // hide: false,
+            // recurse: false,
         }
     }
     pub fn regex(&mut self, s:&str) {
@@ -46,18 +46,6 @@ impl TextFinder {
     }
     pub fn get_last_path(&self) -> &str {
         &self.last_dir
-    }
-    pub fn hide(&mut self, p:bool) {
-        self.hide = p;
-    }
-    pub fn get_hide(&self) -> bool {
-        self.hide
-    }
-    pub fn recurse(&mut self, p:bool) {
-        self.recurse = p;
-    }
-    pub fn get_recurse(&self) -> bool {
-        self.recurse
     }
     pub fn find(&self, file_path: &str) -> bool {
         let contents:String;
@@ -90,13 +78,15 @@ impl TextFinder {
 pub struct TfAppl {
     tf: TextFinder,
     curr_dir: String,
+    hide: bool,
+    recurse: bool,
 }
 impl rust_dir_nav::DirEvent for TfAppl {
     fn do_dir(&mut self, d:&str) {
         /*-- save dir name for use in do_file --*/
         self.curr_dir = d.to_string();
         /*-- print directory name if H(ide) is false --*/
-        if !self.tf.get_hide() {
+        if !self.get_hide() {
             print!("\n--{}", d);
         }
     }
@@ -110,7 +100,7 @@ impl rust_dir_nav::DirEvent for TfAppl {
             /*-- print directory for first file if H(ide) is true --*/
             let pred = 
               self.tf.get_last_path() != self.curr_dir 
-              && self.tf.get_hide()==true;
+              && self.get_hide()==true;
             if  pred {
                 print!("\n\n  {}", self.curr_dir);
                 self.tf.last_path(&self.curr_dir);
@@ -125,19 +115,21 @@ impl TfAppl {
         Self {
             tf: TextFinder::new(),
             curr_dir: String::default(),
+            hide: true,
+            recurse: true,
         }
     }
     pub fn recurse(&mut self, p:bool) {
-        self.tf.recurse(p);
+        self.recurse = p;
     }
     pub fn get_recurse(&self) -> bool {
-        self.tf.get_recurse()
+        self.recurse
     }
     pub fn hide(&mut self, p:bool) {
-        self.tf.hide(p);
+        self.hide =p;
     }
     pub fn get_hide(&self) -> bool {
-        self.tf.get_hide()
+        self.hide
     }
     pub fn regex(&mut self, s:&str) {
         self.tf.regex(s);
@@ -173,56 +165,67 @@ fn verbose(parser: &rust_cmd_line::CmdLineParse) {
         print!("\n  matching files with regex: {:?}", parser.get_regex());
     }
 }
-
+fn help() -> String {
+    let mut help_str = String::new();
+    const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+    help_str.push_str(&format!("\n  TextFinder ver {}",VERSION));
+    help_str.push_str(&format!("\n ======================="));
+    help_str.push_str("\n  Help: [] => default values");
+    help_str.push_str(&format!("\n  /P - start path           [{:?}]","."));
+    help_str.push_str(&format!("\n  /p - patterns             {:?}","rs,exe,rlib"));
+    help_str.push_str(&format!("\n  /s - recurse              [{:?}]","true"));
+    help_str.push_str(&format!("\n  /H - hide unused dirs     [{:?}]","true"));
+    help_str.push_str(&format!("\n  /r - regular expression   {:?}","abc"));
+    help_str.push_str(&format!("\n  /v - display options"));
+    help_str.push_str(&format!("\n  /h - display this message"));
+    help_str
+}
 fn main() {
-    // let do_test = false;
-    // if do_test {
-    //     test2();
-    // }
-    // else {
-        let mut parser = rust_cmd_line::CmdLineParse::new();
-        parser.default_options();
-        parser.parse();
-    
-        let mut dn = rust_dir_nav::DirNav::<TfAppl>::new();
-        // dn.hide(false);
-        //let app = dn.get_app();
+    let mut parser = rust_cmd_line::CmdLineParse::new();
+    parser.default_options();
+    parser.parse();
 
-        if parser.options().contains_key(&'s') {
-            let r_value = parser.options()[&'s'] == "true";
-            dn.recurse(r_value);
-            dn.get_app().recurse(r_value);
-        }
-        else {
-            dn.recurse(false);
-            dn.get_app().recurse(false);
-        }
+    if parser.options().contains_key(&'h') {
+        print!("\n{}\n", help());
+        return;
+    }
 
-        if parser.options().contains_key(&'H') {
-            let h_value = parser.options()[&'H']=="true";
-            dn.hide(h_value);
-            dn.get_app().hide(h_value);
-        }
-        else {
-            dn.hide(true);
-            dn.get_app().hide(true);
-        }
+    let mut dn = rust_dir_nav::DirNav::<TfAppl>::new();
 
-        dn.get_app().regex(parser.get_regex());
+    if parser.options().contains_key(&'s') {
+        let r_value = parser.options()[&'s'] == "true";
+        dn.recurse(r_value);
+        dn.get_app().recurse(r_value);
+    }
+    else {
+        dn.recurse(false);
+        dn.get_app().recurse(false);
+    }
 
-        for patt in parser.patterns() {
-            dn.add_pat(patt);
-        }
-        let mut p = std::path::PathBuf::new();
-        p.push(parser.abs_path());
+    if parser.options().contains_key(&'H') {
+        let h_value = parser.options()[&'H']=="true";
+        dn.hide(h_value);
+        dn.get_app().hide(h_value);
+    }
+    else {
+        dn.hide(true);
+        dn.get_app().hide(true);
+    }
 
-        verbose(&parser);
-        let _ = dn.visit(&p);
+    dn.get_app().regex(parser.get_regex());
 
-        print!(
-            "\n\n  processed {} files in {} dirs", 
-            dn.get_files(), dn.get_dirs()
-        );
-    // }
+    for patt in parser.patterns() {
+        dn.add_pat(patt);
+    }
+    let mut p = std::path::PathBuf::new();
+    p.push(parser.abs_path());
+
+    verbose(&parser);
+    let _ = dn.visit(&p);
+
+    print!(
+        "\n\n  processed {} files in {} dirs", 
+        dn.get_files(), dn.get_dirs()
+    );
     println!("\n\n  That's all Folks!\n\n");
 }
