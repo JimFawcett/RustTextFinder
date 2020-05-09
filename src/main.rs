@@ -31,8 +31,6 @@ impl TextFinder {
         Self { 
             re_str: String::default(), 
             last_dir: String::default(),
-            // hide: false,
-            // recurse: false,
         }
     }
     pub fn regex(&mut self, s:&str) {
@@ -41,10 +39,10 @@ impl TextFinder {
     pub fn get_regex(&self) -> &str {
         &self.re_str
     }
-    pub fn last_path(&mut self, p:&str) {
+    fn last_path(&mut self, p:&str) {
         self.last_dir = p.to_string();
     }
-    pub fn get_last_path(&self) -> &str {
+    fn get_last_path(&self) -> &str {
         &self.last_dir
     }
     pub fn find(&self, file_path: &str) -> bool {
@@ -162,6 +160,7 @@ fn verbose(parser: &rust_cmd_line::CmdLineParse) {
     }
     else {
         print!("\n  searching path: {:?}", &parser.abs_path());
+        print!("\n  patterns: {:?}", parser.patterns());
         print!("\n  matching files with regex: {:?}", parser.get_regex());
     }
 }
