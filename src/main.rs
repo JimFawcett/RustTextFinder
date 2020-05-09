@@ -65,7 +65,7 @@ impl TextFinder {
         }
         let rx_rslt = regex::Regex::new(&self.re_str);
         match rx_rslt {
-            Ok(re) => return re.is_match(&contents),
+            Ok(re) => re.is_match(&contents),
             Err(_) => false,
         }
     }
@@ -98,7 +98,7 @@ impl rust_dir_nav::DirEvent for TfAppl {
             /*-- print directory for first file if H(ide) is true --*/
             let pred = 
               self.tf.get_last_path() != self.curr_dir 
-              && self.get_hide()==true;
+              && self.get_hide();
             if  pred {
                 print!("\n\n  {}", self.curr_dir);
                 self.tf.last_path(&self.curr_dir);
@@ -138,7 +138,7 @@ impl TfAppl {
 }
 /*-- display title, display options if v(erbose) is true --*/
 fn verbose(parser: &rust_cmd_line::CmdLineParse) {
-    const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+    const VERSION: &str = env!("CARGO_PKG_VERSION");
     print!("\n  TextFinder ver {}",VERSION);
     print!("\n =======================");
     if parser.options().contains_key(&'v') {
@@ -150,11 +150,8 @@ fn verbose(parser: &rust_cmd_line::CmdLineParse) {
         print!("\n  regex = {:?}", parser.get_regex());
         for key in parser.options().keys() {
             let value_option = parser.options().get(&key);
-            match value_option {
-                Some(value) => {
-                    print!("\n  option: {} {:?}", key, value);
-                },
-                None => (),
+            if let Some(value) = value_option {
+                print!("\n  option: {} {:?}", key, value);
             }
         }
     }
@@ -166,17 +163,17 @@ fn verbose(parser: &rust_cmd_line::CmdLineParse) {
 }
 fn help() -> String {
     let mut help_str = String::new();
-    const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+    const VERSION: &str = env!("CARGO_PKG_VERSION");
     help_str.push_str(&format!("\n  TextFinder ver {}",VERSION));
-    help_str.push_str(&format!("\n ======================="));
+    help_str.push_str("\n =======================");
     help_str.push_str("\n  Help: [] => default values");
     help_str.push_str(&format!("\n  /P - start path           [{:?}]","."));
     help_str.push_str(&format!("\n  /p - patterns             {:?}","rs,exe,rlib"));
     help_str.push_str(&format!("\n  /s - recurse              [{:?}]","true"));
     help_str.push_str(&format!("\n  /H - hide unused dirs     [{:?}]","true"));
     help_str.push_str(&format!("\n  /r - regular expression   {:?}","abc"));
-    help_str.push_str(&format!("\n  /v - display options"));
-    help_str.push_str(&format!("\n  /h - display this message"));
+    help_str.push_str("\n  /v - display options");
+    help_str.push_str("\n  /h - display this message");
     help_str
 }
 fn main() {
