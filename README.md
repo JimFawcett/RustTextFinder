@@ -7,4 +7,4 @@ Tool to find text in files that match a regular expression.  Tested on Windows 1
 - You can find a complete implementation in the link above.
 - That will be extended with RegEx search and parallel file processing soon.
 - When that is done, these contents will be replaced with the new implementation.
-- 
+
