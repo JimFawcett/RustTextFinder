@@ -1,1 +1,0 @@
-C:\github\JimFawcett\rusttextfinder\target\debug\rust_text_finder.exe: C:\github\JimFawcett\RustCmdLine\src\lib.rs C:\github\JimFawcett\RustDirNav\src\lib.rs C:\github\JimFawcett\rusttextfinder\src\main.rs
