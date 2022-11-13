@@ -1,5 +1,6 @@
 # RustTextFinder
 
+View documentation here:
 https://JimFawcett.github.io/RustTextFinder.html
 
 Tool to find text in files that match a regular expression.  Tested on Windows 10 and Ubuntu 20.04
