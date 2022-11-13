@@ -9,5 +9,5 @@ edition = "2018"
 [dependencies]
 rust_dir_nav = { path = "../RustDirNav" }
 rust_cmd_line = { path = "../RustCmdLine" }
-regex = "1.3.7"
+regex = "1.7.0"
 #lazy_static = "1.4.0"
