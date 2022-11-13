@@ -1,5 +1,5 @@
 /target
-Cargo.lock
+Cargo.locktype 
 *.suo
 .suo
 WebpageTemplate/.vs
