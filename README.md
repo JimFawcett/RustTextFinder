@@ -19,7 +19,7 @@ RustTextFinder is a tool for locating files containing text that matches a speci
 
 It processes many hundreds of files and directories in a few seconds.
 
-![class diagram](../../Pictures/RustTextFinder.jpg)
+![class diagram](https://github.com/JimFawcett/JimFawcett.github.io/blob/master/Pictures/RustTextFinder.jpg)
 
 ### Design:
 
