@@ -19,6 +19,8 @@ RustTextFinder is a tool for locating files containing text that matches a speci
 
 It processes many hundreds of files and directories in a few seconds.
 
+![class diagram](./Pictures/RustTextFinder.jpg)
+
 ### Design:
 
 TextFinder implements the following methods and functions:
@@ -66,4 +68,3 @@ Rust Repositories
 
 [Logger](RustLogger.html)  [TextFinder](RustTextFinder.html)  [BlockingQueue](RustBlockingQueue.html)  [ThreadPool](RustThreadPool.html)  [CmdLineParser](RustCmdLine.html)  [DisplayLib](RustDisplayLib.html)  [DirNav](RustDirNav.html)  [Comm](RustComm.html)   [Comm w/TP](RustCommWithThreadPool.html)  [String Conver](RustStringConversions.html)  [BuildOn](BuildOn.html)   [Comm Exper's](RustCommExperiments.html)  [Byte Record](RustByteRecord.html)  [Basic Demos](RustBasicDemos.html)  [Error Handling](RustErrorHandling.html)  [Rust Models](RustModels.html)   [Library Demos](RustLibraryDemos.html)  [Rust Bite by Byte](RustBiteByByte.html)        [bottom](#bottom) [oper](#oper) [design](#design) [concept](#concept) [top](#top)
 
-Sections
